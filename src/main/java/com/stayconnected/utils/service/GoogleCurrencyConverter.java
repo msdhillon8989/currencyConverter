@@ -51,11 +51,22 @@ public class GoogleCurrencyConverter implements CurrencyConverter {
 		} catch (Exception e) {
 			String errorMessage = "Could not get conversion rate from google for : " + fromCurrency + "_to_" + toCurrency;
 			logger.error(errorMessage, e);
-			mailService.sendMail(errorMessage + e.getMessage());
+			mailService.sendMail(errorMessage + " \n<BR> "+getExceptionTrace(e));
 			throw new Exception(errorMessage, e);
 		}
 		return rate;
 
+	}
+
+	private String getExceptionTrace(Exception e) {
+		StackTraceElement[] stackTrace = e.getStackTrace();
+
+		StringBuilder sb = new StringBuilder();
+		for(int i=0;i<20&&i<stackTrace.length;i++)
+		{
+			sb.append(stackTrace[i].toString()).append("\n");
+		}
+		return sb.toString();
 	}
 
 	@Scheduled(fixedDelay = 86400000)
@@ -63,6 +74,7 @@ public class GoogleCurrencyConverter implements CurrencyConverter {
 	{
 		try{
 			getConversionRate("INR","USD");
+			mailService.sendMail("Service is working fine");
 		}
 		catch (Exception e)
 		{
