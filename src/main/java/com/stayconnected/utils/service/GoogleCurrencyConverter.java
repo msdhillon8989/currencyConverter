@@ -6,6 +6,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -15,6 +17,9 @@ import java.util.List;
 public class GoogleCurrencyConverter implements CurrencyConverter {
 
 	private Logger logger = LoggerFactory.getLogger(GoogleCurrencyConverter.class);
+
+	@Autowired
+	MailService mailService;
 
 	private double getRateFromGoogle(String currentCurrency, String requiredCurrency) throws Exception {
 		double conversionRate = 0.0;
@@ -46,9 +51,22 @@ public class GoogleCurrencyConverter implements CurrencyConverter {
 		} catch (Exception e) {
 			String errorMessage = "Could not get conversion rate from google for : " + fromCurrency + "_to_" + toCurrency;
 			logger.error(errorMessage, e);
+			mailService.sendMail(errorMessage + e.getMessage());
 			throw new Exception(errorMessage, e);
 		}
 		return rate;
 
+	}
+
+	@Scheduled(fixedDelay = 86400000)
+	public void testConversion()
+	{
+		try{
+			getConversionRate("INR","USD");
+		}
+		catch (Exception e)
+		{
+
+		}
 	}
 }
