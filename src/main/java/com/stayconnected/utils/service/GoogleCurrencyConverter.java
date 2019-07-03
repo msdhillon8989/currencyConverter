@@ -69,16 +69,5 @@ public class GoogleCurrencyConverter implements CurrencyConverter {
 		return sb.toString();
 	}
 
-	@Scheduled(fixedDelay = 86400000)
-	public void testConversion()
-	{
-		try{
-			getConversionRate("INR","USD");
-			mailService.sendMail("Service is working fine");
-		}
-		catch (Exception e)
-		{
 
-		}
-	}
 }

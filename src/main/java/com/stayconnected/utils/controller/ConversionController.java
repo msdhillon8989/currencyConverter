@@ -19,8 +19,8 @@ public class ConversionController {
 	@Autowired
 	CurrencyConverter converter;
 
-	@GetMapping(value = "/convert", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Response> getBaggageDetails(@RequestParam(value = "from") String from,@RequestParam(value="to") String to) {
+	@GetMapping(value = "/v1/convert", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<Response> convertCurrency(@RequestParam(value = "from") String from,@RequestParam(value="to") String to) {
 
 
 		Response response =new Response();
@@ -37,6 +37,18 @@ public class ConversionController {
 			response.setError("Error while converting currency: "+e.getMessage());
 			responseResponseEntity = new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
+
+		return responseResponseEntity;
+	}
+
+	@GetMapping(value = "/convert", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<Response> convertCurrencyWithToken(@RequestParam(value = "from") String from,@RequestParam(value="to") String to) {
+
+
+		Response response =new Response();
+		ResponseEntity<Response> responseResponseEntity;
+		response.setError("Invalid Token. Please send mail to 'service.stay.connected@gmail.com' to get free token");
+		responseResponseEntity = new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 
 		return responseResponseEntity;
 	}
